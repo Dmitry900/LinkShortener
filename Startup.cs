@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Sqlite;
+using LinkShortener.Models;
 
 namespace LinkShortener
 {
@@ -26,7 +29,9 @@ namespace LinkShortener
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddDbContext<LinkShortenerAPIContext>(options => 
+                options.UseSqlite(Configuration.GetConnectionString("LinkShortenerAPIContext")));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -43,6 +48,7 @@ namespace LinkShortener
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "LinkShortener v1"));
             }
+
 
             app.UseHttpsRedirection();
 
